@@ -14,11 +14,8 @@ persistentVolume:
 
 ingress:
   enabled: true
-  annotations: {}
-  path: /
   hosts:
     - host: pgadmin.lab.myddns.me
-      paths: []
   tls: []
 
 ## Configure servers.json: https://www.pgadmin.org/docs/pgadmin4/latest/import_export_servers.html

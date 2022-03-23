@@ -33,7 +33,7 @@ spec:
           - path: {{ $ingressPath }}
             backend:
               service:
-                name: pgadmin.pgadmin
+                name: pgadmin-svc
                 port:
                   name: http
             pathType: ImplementationSpecific

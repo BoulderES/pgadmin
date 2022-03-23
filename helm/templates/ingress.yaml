@@ -33,9 +33,9 @@ spec:
           - path: {{ $ingressPath }}
             backend:
               service:
-                name: {{ $fullName }}
+                name: pgadmin.pgadmin
                 port:
-                  number: 80
+                  name: http
             pathType: Prefix
   {{- end }}
 {{- end }}

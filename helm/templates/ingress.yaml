@@ -36,5 +36,6 @@ spec:
                 name: {{ $fullName }}
                 port:
                   number: 80
+            pathType: Prefix
   {{- end }}
 {{- end }}

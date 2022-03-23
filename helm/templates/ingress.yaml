@@ -27,7 +27,7 @@ spec:
 {{- end }}
   defaultBackend:
     service:
-      name: pgadmin-svc
+      name: {{ $fullName }}
       port:
         number: 80
 
@@ -39,7 +39,7 @@ spec:
           - path: {{ $ingressPath }}
             backend:
               service:
-                name: pgadmin-svc
+                name: {{ $fullName }}
                 port:
                   name: http
             pathType: ImplementationSpecific

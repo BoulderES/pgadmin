@@ -17,7 +17,8 @@ ingress:
   annotations: {}
   path: /
   hosts:
-    - pgadmin.lab.myddns.me
+    - host: pgadmin.lab.myddns.me
+      paths: []
   tls: []
 
 ## Configure servers.json: https://www.pgadmin.org/docs/pgadmin4/latest/import_export_servers.html

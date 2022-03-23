@@ -34,3 +34,10 @@ servers:
         Host: "postgres-postgresql-ha-pgpool.postgres"
         SSLMode: "prefer"
         MaintenanceDB: "postgres"
+
+service:
+  name: pgadmin
+  type: ClusterIP
+  port: 80
+  tlsport: 443
+  annotations: {}

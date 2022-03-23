@@ -1,0 +1,36 @@
+---
+pgadmin:
+  ## pgadmin admin user
+  username: pgadmin4@pgadmin.org
+  ## pgadmin admin password
+  existingPasswordSecret: "pgadmin-secret"
+  # password: admin
+  tls: false
+persistence:
+  enabled: true
+  storageClass: qnap-nfs
+  size: 4Gi
+
+
+ingress:
+  enabled: true
+  annotations: {}
+  path: /
+  hosts:
+    - pgadmin.lab.myddns.me
+  tls: []
+
+## Configure servers.json: https://www.pgadmin.org/docs/pgadmin4/latest/import_export_servers.html
+##
+servers:
+  enabled: true
+  config:
+    Servers:
+      1:
+        Name: "Postgres common"
+        Group: "Server Group 1"
+        Port: 5432
+        Username: "postgres"
+        Host: "postgres-postgresql-ha-pgpool.postgres"
+        SSLMode: "prefer"
+        MaintenanceDB: "postgres"

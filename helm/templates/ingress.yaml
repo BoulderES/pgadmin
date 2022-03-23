@@ -36,6 +36,6 @@ spec:
                 name: pgadmin.pgadmin
                 port:
                   name: http
-            pathType: Prefix
+            pathType: ImplementationSpecific
   {{- end }}
 {{- end }}

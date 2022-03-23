@@ -6,7 +6,7 @@ pgadmin:
   existingPasswordSecret: "pgadmin-secret"
   # password: admin
   tls: false
-persistence:
+persistentVolume:
   enabled: true
   storageClass: qnap-nfs
   size: 4Gi
@@ -34,10 +34,3 @@ servers:
         Host: "postgres-postgresql-ha-pgpool.postgres"
         SSLMode: "prefer"
         MaintenanceDB: "postgres"
-
-service:
-  name: pgadmin-svc
-  type: ClusterIP
-  port: 80
-  tlsport: 443
-  annotations: {}

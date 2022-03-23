@@ -1,116 +1,94 @@
-:warning: As explained in Issue [#18](https://github.com/cetic/helm-pgadmin/issues/18), this repository is now archived. Please use https://github.com/helm/charts/tree/master/stable/pgadmin instead. Thanks you all for the contributions made to this Helm Chart! :warning:
+###### based on [dpage/pgadmin4]
 
-# Helm Chart for pgAdmin
+# Moved to new repo
 
-[![CircleCI](https://circleci.com/gh/cetic/helm-pgadmin.svg?style=svg)](https://circleci.com/gh/cetic/helm-pgadmin/tree/master) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) ![version](https://img.shields.io/github/tag/cetic/helm-pgadmin.svg?label=release)
+Duo to the deprecation timeline provided in [here](https://github.com/helm/charts), this chart has been moved towards a new repository that can be found [here](https://github.com/rowanruseler/helm-charts/tree/master/charts/pgadmin4).
+
+# pgAdmin
+
+[pgAdmin](https://www.pgadmin.org/) is the leading Open Source management tool for Postgres, the world’s most advanced Open Source database. pgAdmin is designed to meet the needs of both novice and experienced Postgres users alike, providing a powerful graphical interface that simplifies the creation, maintenance and use of database objects.
+
+## TL;DR;
+
+```console
+$ helm install stable/pgadmin
+```
 
 ## Introduction
 
-This [Helm](https://github.com/kubernetes/helm) chart installs [pgAdmin](https://github.com/postgres/pgadmin4) in a Kubernetes cluster.
+This chart bootstraps a [pgAdmin](https://www.pgadmin.org/) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-## Prerequisites
+## Install the Chart
 
-- Kubernetes cluster 1.10+
-- Helm 2.8.0+
-- PV provisioner support in the underlying infrastructure.
+To install the chart with the release name `my-release`:
 
-## Installation
-
-### Add Helm repository
-
-```bash
-helm repo add cetic https://cetic.github.io/helm-charts
-helm repo update
+```console
+$ helm install --name my-release stable/pgadmin
 ```
 
-### Configure the chart
+The command deploys pgAdmin on the Kubernetes cluster in the default configuration. The configuration section lists the parameters that can be configured durign installation.
 
-The following items can be set via `--set` flag during installation or configured by editing the `values.yaml` directly (need to download the chart first).
+> **Tip**: List all releases using `helm list`
 
-#### Configure the way how to expose pgAdmin service:
-
-- **Ingress**: The ingress controller must be installed in the Kubernetes cluster.
-- **ClusterIP**: Exposes the service on a cluster-internal IP. Choosing this value makes the service only reachable from within the cluster.
-- **NodePort**: Exposes the service on each Node’s IP at a static port (the NodePort). You’ll be able to contact the NodePort service, from outside the cluster, by requesting `NodeIP:NodePort`.
-- **LoadBalancer**: Exposes the service externally using a cloud provider’s load balancer.
-
-#### Configure the way how to persistent data:
-
-- **Disable**: The data does not survive the termination of a pod.
-- **Persistent Volume Claim(default)**: A default `StorageClass` is needed in the Kubernetes cluster to dynamic provision the volumes. Specify another StorageClass in the `storageClass` or set `existingClaim` if you have already existing persistent volumes to use.
-
-### Install the chart
-
-Install the pgAdmin helm chart with a release name `my-release`:
-
-```bash
-helm install --name my-release cetic/pgadmin
-```
-
-## Uninstallation
+## Uninstall the Chart
 
 To uninstall/delete the `my-release` deployment:
 
-```bash
+```console
 helm delete --purge my-release
 ```
 
+The command removes nearly all the Kubernetes components associated with the chart and deletes the release.
+
 ## Configuration
 
-The following table lists the configurable parameters of the pgAdmin chart and the default values.
+| Parameter | Description | Default |
+| --------- | ----------- | ------- |
+| `replicaCount` | Number of pgadmin replicas | `1` |
+| `image.repository` | Docker image | `dpage/pgadmin4` |
+| `image.tag` | Docker image tag | `4.18` |
+| `image.pullPolicy` | Docker image pull policy | `IfNotPresent` |
+| `service.type` | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP` |
+| `service.port` | Service port | `80` |
+| `strategy` | Specifies the strategy used to replace old Pods by new ones | `{}` |
+| `serverDefinitions.enabled` | Enables Server Definitions | `false` |
+| `serverDefinitions.servers` | Pre-configured server parameters | `` |
+| `ingress.enabled` | Enables Ingress | `false` |
+| `ingress.annotations` | Ingress annotations | `{}` |
+| `ingress.hosts` | Ingress accepted hostnames | `nil` |
+| `ingress.tls` | Ingress TLS configuration | `[]` |
+| `ingress.path` | Ingress path mapping | `` |
+| `env.email` | pgAdmin default email | `chart@example.local` |
+| `env.password` | pgAdmin default password | `SuperSecret` |
+| `persistentVolume.enabled` | If true, pgAdmin will create a Persistent Volume Claim | `true` |
+| `persistentVolume.accessMode` | Persistent Volume access Mode | `ReadWriteOnce` |
+| `persistentVolume.size` | Persistent Volume size | `10Gi` |
+| `persistentVolume.storageClass` | Persistent Volume Storage Class | `unset` |
+| `securityContext` | Custom [security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for pgAdmin containers | `` |
+| `resources` | CPU/memory resource requests/limits | `{}` |
+| `livenessProbe` | [liveness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
+| `readinessProbe` | [readiness probe](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/) initial delay and timeout | `` |
+| `nodeSelector` | Node labels for pod assignment | `{}` |
+| `tolerations` | Node tolerations for pod assignment | `[]` |
+| `affinity` | Node affinity for pod assignment | `{}` |
+| `env.email` | pgAdmin default email | `chart@example.local` |
+| `env.password` | pgAdmin default password | `SuperSecret` |
+| `env.enhanced_cookie_protection` | Allows pgAdmin4 to create session cookies based on IP address | `"False"` |
 
-| Parameter                                                                   | Description                                                                                                        | Default                         |
-| --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------| ------------------------------- |
-| **Image**                                                                   |
-| `image.repository`                                                          | pgAdmin Image name                                                                                                 | `dpage/pgadmin4`                |
-| `image.tag`                                                                 | pgAdmin Image tag                                                                                                  | `4.13`                          |
-| `image.pullPolicy`                                                          | pgAdmin Image pull policy                                                                                          | `IfNotPresent`                  |
-| **PgAdmin**                                                                 |
-| `pgadmin.username`                                                          | pgAdmin admin user                                                                                                 | `pgadmin4@pgadmin.org`          |
-| `pgadmin.password`                                                          | pgAdmin admin password                                                                                             | `admin`                         |
-| `pgadmin.existingPasswordSecret`                                            | existing secret containing pgAdmin admin password                                                                  | `nil`                           |
-| `pgadmin.tls`                                                               | pgAdmin admin TLS. the container will listen on port 80 for connections in plain text. If set to any value, the container will listen on port 443 for TLS connections. When TLS is enabled, a certificate and key must be provided. See [secrets file](/templates/secrets.yaml)| `false`                         |
-| `pgadmin.scriptname`                                                        | pgAdmin ScriptName Env, See https://www.pgadmin.org/docs/pgadmin4/latest/container_deployment.html                 | `nil`                         |
-| `pgadmin.config`                                                        | pgAdmin configuration override(s) Env, config.py entries can be overriden by environment variables with the prefix: 'PGADMIN_CONFIG_'                 | `nil`                         |
-| **Persistence**                                                             |
-| `persistence.enabled`                                                       | Enable the data persistence or not                                                                                 | `true`                          |
-| `persistence.existingClaim`                                                 | Provide an existing PersistentVolumeClaim, the value is evaluated as a template                                    | `nil`                           |
-| `persistence.storageClass`                                                  | PVC Storage Class for PostgreSQL volume                                                                            | `nil`                           |
-| `persistence.accessMode`                                                    | The access mode of the volume                                                                                      | `ReadWriteOnce`                 |
-| `persistence.size`                                                          | The size of the volume                                                                                             | `4Gi`                           |
-| **Service**                                                                 |
-| `service.type`                                                              | Type of service for pgAdmin frontend                                                                               | `LoadBalancer`                  |
-| `service.port`                                                              | Port to expose service                                                                                             | `80`                            |
-| `service.tlsport`                                                           | Port to expose service in tls, `pgadmin.tls`must be enabled                                                        | `443`                           |
-| `service.loadBalancerIP`                                                    | LoadBalancerIP if service type is `LoadBalancer`                                                                   | `nil`                           |
-| `service.loadBalancerSourceRanges`                                          | Address that are allowed when svc is `LoadBalancer`                                                                | `[]`                            |
-| `service.annotations`                                                       | Service annotations                                                                                                | `{}`                            |
-| **Ingress**                                                                 |
-| `ingress.enabled`                                                           | Enables Ingress                                                                                                    | `false`                         |
-| `ingress.annotations`                                                       | Ingress annotations                                                                                                | `{}`                            |
-| `ingress.path`                                                              | Path to access frontend                                                                                            | `/`                             |
-| `ingress.hosts`                                                             | Ingress hosts                                                                                                      | `[]`                            |
-| `ingress.tls`                                                               | Ingress TLS configuration                                                                                          | `[]`                            |
-| **Servers**                                                                 |
-| `servers.enabled`                                                           | Enable the servers configuration. If enabled, server definitions found in `servers.config` will be loaded at launch time.| `true`                    |
-| `servers.config`                                                            | Server definitions                                                                                                 | `See the values.yaml`           |
-| **ReadinessProbe**                                                          |
-| `readinessProbe`                                                            | Rediness Probe settings                                                                                            | `nil`                           |
-| **LivenessProbe**                                                           |
-| `livenessProbe`                                                             | Liveness Probe settings                                                                                            | `nil`                           |
-| **Resources**                                                               |
-| `resources`                                                                 | CPU/Memory resource requests/limits                                                                                | `{}`                            |
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
-## Credits
+```bash
+$ helm install stable/pgadmin --name my-release \
+  --set env.password=SuperSecret
+```
 
-Initially inspired from https://github.com/jjcollinge/pgadmin-chart, which is archived.
+Alternatively, a YAML file that specifies the values for the parameters can be
+provided while installing the chart. For example:
 
-## Contributing
+```bash
+$ helm install stable/pgadmin --name my-release -f values.yaml
+```
 
-Feel free to contribute by making a [pull request](https://github.com/cetic/helm-pgadmin/pull/new/master).
+> **Tip**: You can use the default [values.yaml](values.yaml)
 
-Please read the official [Contribution Guide](https://github.com/helm/charts/blob/master/CONTRIBUTING.md) from Helm for more information on how you can contribute to this Chart.
-
-## License
-
-[Apache License 2.0](/LICENSE.md)
+[dpage/pgadmin4]: https://hub.docker.com/r/dpage/pgadmin4

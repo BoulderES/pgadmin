@@ -1,19 +1,15 @@
-{{- if .Values.ingress.enabled }}
+{{- if .Values.ingress.enabled -}}
 {{- $fullName := include "pgadmin.fullname" . -}}
-{{- $ingressPath := .Values.ingress.path -}}
-apiVersion: networking.k8s.io/v1
+apiVersion: {{ template "ingress.apiVersion" . }}
 kind: Ingress
 metadata:
-  name: {{ template "pgadmin.fullname" . }}
+  name: {{ $fullName }}
   labels:
-    app: {{ template "pgadmin.name" . }}
-    chart: {{ template "pgadmin.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-{{- with .Values.ingress.annotations }}
+    {{- include "pgadmin.labels" . | nindent 4 }}
+  {{- if .Values.ingress.annotations }}
   annotations:
-{{ toYaml . | indent 4 }}
-{{- end }}
+    {{- .Values.ingress.annotations | toYaml | nindent 4 }}
+  {{- end }}
 spec:
 {{- if .Values.ingress.tls }}
   tls:
@@ -25,23 +21,16 @@ spec:
       secretName: {{ .secretName }}
   {{- end }}
 {{- end }}
-  defaultBackend:
-    service:
-      name: {{ $fullName }}
-      port:
-        number: 80
-
   rules:
   {{- range .Values.ingress.hosts }}
-    - host: {{ . }}
+    - host: {{ .host | quote }}
       http:
         paths:
-          - path: {{ $ingressPath }}
+        {{- range .paths }}
+          - path: {{ . }}
             backend:
-              service:
-                name: {{ $fullName }}
-                port:
-                  name: http
-            pathType: ImplementationSpecific
+              serviceName: {{ $fullName }}
+              servicePort: http
+        {{- end }}
   {{- end }}
 {{- end }}
